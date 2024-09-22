@@ -1,0 +1,10 @@
+export const SEQUELIZE = 'SEQUELIZE';
+export const DEVELOPMENT = 'development';
+export const TEST = 'test';
+export const PRODUCTION = 'production';
+
+export const SUBJECT_REPOSITORY = 'SUBJECT_REPOSITORY';
+export const TOPIC_REPOSITORY = 'TOPIC_REPOSITORY';
+export const USER_REPOSITORY = 'USER_REPOSITORY';
+export const USER_PROGRESS_REPOSITORY = 'USER_PROGRESS_REPOSITORY';
+export const VIDEO_PROGRESS_REPOSITORY = 'VIDEO_PROGRESS_REPOSITORY';
