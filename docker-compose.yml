@@ -5,7 +5,7 @@ services:
       context: ./learn 
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - NODE_ENV=production
     depends_on:
@@ -39,7 +39,7 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: learning
     ports:
-      - "5432:5432"
+      - "5434:5432"  # Change to 5434
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
