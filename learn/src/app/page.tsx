@@ -7,11 +7,17 @@ const getToken = () => {
   return localStorage.getItem('token');
 };
 
+type User = {
+  userId: number;
+  name: string;
+  email: string;
+  totalWatchTime: number;
+};
+
 const Dashboard = () => {
-  const [rankedUsers, setRankedUsers] = useState<any[]>([]); // Ensure it's typed as an array
+  const [rankedUsers, setRankedUsers] = useState<User[]>([]); 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({ page: 1, limit: 10 });
 
   useEffect(() => {
     const fetchRankedUsers = async () => {
@@ -22,34 +28,35 @@ const Dashboard = () => {
           },
         });
         
-        // Check if the response is OK
         if (!response.ok) {
           throw new Error('Failed to fetch ranked users');
         }
 
         const data = await response.json();
         
-        // Ensure data is an array
         if (Array.isArray(data)) {
           setRankedUsers(data);
         } else {
           throw new Error('Unexpected response format');
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Something went wrong');
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchRankedUsers();
-  }, [pagination]);
+  });
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <h1 className="text-3xl text-black font-bold mb-8">Admin Dashboard</h1>
 
-      {/* Buttons to add subject, topic, and view users */}
       <div className="flex space-x-4 mb-8">
         <Link href="/subject/create" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
           Add Subject
@@ -59,7 +66,6 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      {/* Table of ranked users */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold mb-6">Ranked Users</h2>
 

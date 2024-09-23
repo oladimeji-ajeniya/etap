@@ -51,7 +51,7 @@ export const createTopic = async (formData: FormData) => {
 };
 
 export const fetchTopicsBySubject = async (
-  subjectId: any,
+  subjectId: string | string[],
   page: number,
   limit: number,
   token: string
@@ -77,7 +77,7 @@ export const fetchTopicsBySubject = async (
 };
 
 
-export const sendVideoProgress = async (userId: number, topicId: number, watchTimePercentage: number, token: string) => {
+export const sendVideoProgress = async (userId: number, topicId: number, watchTimePercentage: number) => {
   const response = await fetch(`${API_BASE_URL}/v1/video-progress/${userId}/${topicId}`, {
     method: 'POST',
     headers: {

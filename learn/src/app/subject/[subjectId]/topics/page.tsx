@@ -14,8 +14,8 @@ const SubjectTopicsPage = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1); 
   const limit = 10; 
-  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({}); // Store video references
-  const userId = parseInt(localStorage.getItem('userId') || '0', 10); // Get userId from localStorage
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({}); 
+  const userId = parseInt(localStorage.getItem('userId') || '0', 10); 
 
   useEffect(() => {
     if (!subjectId) return;
@@ -25,19 +25,20 @@ const SubjectTopicsPage = () => {
       try {
         const token = localStorage.getItem('token') || '';
         const data = await fetchTopicsBySubject(subjectId, page, limit, token);
-
-        console.log('data', data);
-
-        
+    
         setTopics(data.topics);
         setTotalPages(data.total);
-      } catch (err: any) {
-        setError(err.message || 'Something went wrong');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Something went wrong');
+        }
       } finally {
         setLoading(false);
       }
     };
-
+    
     fetchTopics();
   }, [subjectId, page]);
 
@@ -55,7 +56,7 @@ const SubjectTopicsPage = () => {
         const watchTimePercentage = Math.floor((currentTime / duration) * 100); 
 
         try {
-          await sendVideoProgress(userId, topicId, watchTimePercentage, localStorage.getItem('token') || '');
+          await sendVideoProgress(userId, topicId, watchTimePercentage);
           console.log(`Progress sent for user ID: ${userId}, topic ID: ${topicId}, Percentage: ${watchTimePercentage}`);
         } catch (error) {
           console.error('Failed to send progress:', error);
@@ -88,7 +89,6 @@ const SubjectTopicsPage = () => {
                   className="mt-4"
                   width="500"
                   controls
-                  ref={(el) => (videoRefs.current[topic.id] = el)} 
                   onTimeUpdate={() => handleVideoTimeUpdate(topic.id)}
                 >
                   Your browser does not support the video tag.

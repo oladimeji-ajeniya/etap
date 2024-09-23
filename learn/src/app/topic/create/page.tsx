@@ -1,28 +1,30 @@
 "use client";
 import isAuthGuard from '@/components/isAuthGuard';
-import { fetchSubjects } from '@/services/subjectService';
+import { fetchSubjects, Subject } from '@/services/subjectService';
 import { createTopic } from '@/services/topicService';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 const CreateTopicPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [subjectId, setSubjectId] = useState('');
-  const [subjects, setSubjects] = useState<{ id: number; title: string }[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Add loading state
-  const router = useRouter(); // Router for navigation
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const loadSubjects = async () => {
       try {
-        const data = await fetchSubjects();
+        const data: Subject[] = await fetchSubjects();
         setSubjects(data);
-      } catch (err: any) {
-        setError(err.message || 'Unable to fetch subjects');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Unable to fetch subjects');
+        }
       }
     };
 
@@ -33,11 +35,11 @@ const CreateTopicPage = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    setLoading(true); // Set loading state to true
+    setLoading(true);
 
     if (!videoFile) {
       setError('Please select a video file');
-      setLoading(false); // Reset loading if there is an error
+      setLoading(false);
       return;
     }
 
@@ -50,17 +52,21 @@ const CreateTopicPage = () => {
     try {
       await createTopic(formData);
       setSuccess('Topic created successfully!');
-      
+
       // Reset form fields
       setTitle('');
       setDescription('');
       setVideoFile(null);
       setSubjectId('');
 
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Something went wrong');
+      } else {
+        setError('Something went wrong');
+      }
     } finally {
-      setLoading(false); // Set loading to false after the request
+      setLoading(false);
     }
   };
 
@@ -123,7 +129,6 @@ const CreateTopicPage = () => {
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
           
-          {/* Display loader and disable button when loading */}
           <button
             type="submit"
             className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}

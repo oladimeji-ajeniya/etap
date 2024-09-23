@@ -1,14 +1,14 @@
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, ComponentType } from 'react';
 
-const isAuthGuard = (WrappedComponent: any) => {
-  const AuthGuard = (props: any) => {
+const isAuthGuard = <P extends object>(WrappedComponent: ComponentType<P>) => {
+  const AuthGuard = (props: P) => {
     const router = useRouter();
-    const token = localStorage.getItem('token');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
     useEffect(() => {
       if (!token) {
-        router.push('/login'); 
+        router.push('/login');
       }
     }, [token, router]);
 
@@ -18,6 +18,7 @@ const isAuthGuard = (WrappedComponent: any) => {
 
     return <WrappedComponent {...props} />;
   };
+
   return AuthGuard;
 };
 

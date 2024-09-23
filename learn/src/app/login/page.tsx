@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (values: { email: string; password: string }) => {
     setError(null);
-
+  
     try {
       const data = await login(values.email, values.password); 
       if (data && data.token) {
@@ -28,10 +28,15 @@ const LoginPage = () => {
       } else {
         throw new Error('Invalid login response');
       }
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Something went wrong');
+      }
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

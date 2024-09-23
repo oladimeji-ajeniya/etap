@@ -35,11 +35,16 @@ const CreateSubjectPage = () => {
               await createSubject(subject);
               setSuccess('Subject created successfully!');
               resetForm();
-            } catch (err: any) {
-              setError(err.message || 'Something went wrong');
+            } catch (err: unknown) {
+              if (err instanceof Error) {
+                setError(err.message || 'Something went wrong');
+              } else {
+                setError('Something went wrong');
+              }
             } finally {
-              setSubmitting(false); // Ensure form submission state is reset
+              setSubmitting(false);
             }
+            
           }}
         >
           {({ isSubmitting }) => (

@@ -26,7 +26,6 @@ export const databaseProviders = [{
         }
         const sequelize = new Sequelize(config);
         sequelize.addModels([ Topic, Subject, User, VideoProgress]);
-        //await sequelize.sync();
         return sequelize;
     },
 }];

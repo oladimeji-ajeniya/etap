@@ -15,17 +15,21 @@ const ListSubjectsPage = () => {
       try {
         const data = await fetchSubjects();
         setSubjects(data);
-      } catch (err: any) {
-        setError(err.message || 'Unable to get subjects');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || 'Unable to get subjects');
+        } else {
+          setError('Unable to get subjects');
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     getSubjects();
-  }, []);
+  }, []);  
 
-  const handleViewTopics = (subjectId: any) => {
+  const handleViewTopics = (subjectId: number | undefined) => {
     router.push(`/subject/${subjectId}/topics`); 
   };
 

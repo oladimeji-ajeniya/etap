@@ -19,19 +19,31 @@ const SignupPage = () => {
       .required('Password is required'),
   });
 
-  const handleSubmit = async (values: { name: string; email: string; password: string }, { setSubmitting }: any) => {
+  type SubmitHelpers = {
+    setSubmitting: (isSubmitting: boolean) => void;
+  };
+  
+  const handleSubmit = async (
+    values: { name: string; email: string; password: string },
+    { setSubmitting }: SubmitHelpers
+  ) => {
     setError(null);
-
+  
     try {
       await signupUser(values.name, values.email, values.password);
       alert('Signup successful!');
       setSubmitting(false);
-      router.push('/login'); 
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
-      setSubmitting(false); 
+      router.push('/login');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Something went wrong');
+      }
+      setSubmitting(false);
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
