@@ -1,18 +1,20 @@
-# Use official Node.js image
-FROM node:18-alpine
+FROM node:18
 
-# Set working directory
+# Install Python and build essentials
+RUN apt-get update && apt-get install -y python3 make g++
+
+# Set the working directory
 WORKDIR /app
 
 # Copy package.json and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the app code
+# Copy the rest of your app
 COPY . .
 
-# Expose port
+# Expose the necessary port
 EXPOSE 9000
 
-# Start the NestJS app
-CMD ["npm", "run", "start:dev"]
+# Command to run the app
+CMD ["npm", "run", "start:prod"]
